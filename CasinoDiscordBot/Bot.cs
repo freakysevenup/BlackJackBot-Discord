@@ -51,24 +51,6 @@ namespace CasinoDiscordBot
                     
                     bj.determinePlay("draw");
 
-                    if(bj.getCurrentHandValue(false) > 21)
-                    {
-                        message = @"You lost \nYour Chips : " + bj.getChips() 
-                            + "\nYour Hand : " + displayHand(bj.getPlayerHand()) 
-                            + "\tHand Value : " + bj.getCurrentHandValue(false) 
-                            + "Dealer Hand : " + displayHand(bj.getCompHand()) 
-                            + "\tComp Hand Value : " + getCurrentHandValue(bj.getCompHand()) 
-                            + "\nWould you like me to .deal again? or .quit?";
-                        bj.adjustPlayerChips(2);
-                        await (e.Channel.SendMessage(message));
-                    }
-                    else
-                    {
-                        message = @"Your Chips: " + bj.getChips()
-                            + "\nYour Hand : " + displayHand(bj.getPlayerHand())
-                            + "\tHand Value : " + bj.getCurrentHandValue(false);
-                        await (e.Channel.SendMessage(message));
-                    }
                     if(bj.isHandSplit())
                     {
                         if (bj.getCurrentHandValue(true) > 21)
@@ -88,6 +70,24 @@ namespace CasinoDiscordBot
                                 + "\tSplit Hand Value : " + bj.getCurrentHandValue(true);
                             await (e.Channel.SendMessage(message));
                         }
+                    }
+                    else if (bj.getCurrentHandValue(false) > 21)
+                    {
+                        message = @"You lost \nYour Chips : " + bj.getChips()
+                            + "\nYour Hand : " + displayHand(bj.getPlayerHand())
+                            + "\tHand Value : " + bj.getCurrentHandValue(false)
+                            + "Dealer Hand : " + displayHand(bj.getCompHand())
+                            + "\tComp Hand Value : " + getCurrentHandValue(bj.getCompHand())
+                            + "\nWould you like me to .deal again? or .quit?";
+                        bj.adjustPlayerChips(2);
+                        await (e.Channel.SendMessage(message));
+                    }
+                    else
+                    {
+                        message = @"Your Chips: " + bj.getChips()
+                            + "\nYour Hand : " + displayHand(bj.getPlayerHand())
+                            + "\tHand Value : " + bj.getCurrentHandValue(false);
+                        await (e.Channel.SendMessage(message));
                     }
                     if(!(bj.getCurrentHandValue(false) > 21) && !(bj.getCurrentHandValue(true) > 21))
                     {
@@ -170,6 +170,8 @@ namespace CasinoDiscordBot
                     }
                 });
 
+            //TODO: Cannot split on a split hand make sure the logic is there to stop this
+
             commands.CreateCommand("split")
                 .Parameter("user", ParameterType.Unparsed)
                 .Do(async (e) =>
@@ -184,6 +186,8 @@ namespace CasinoDiscordBot
                         + "\nWhat will you do?" + "\n.draw, .double down, or .hold";
                     await (e.Channel.SendMessage(message));
                 });
+
+            //TODO: Cannot double down on a split (you actually can but I may turn that off.. Decide and follow up)
 
             commands.CreateCommand("double down")
                 .Parameter("user", ParameterType.Unparsed)
@@ -202,6 +206,8 @@ namespace CasinoDiscordBot
                     }
                     await (e.Channel.SendMessage("Dealer Hand : ? " + displayCard(bj.getCompHand()[1]) + "\nWhat will you do?" + "\n.draw or .hold"));
                 });
+
+            //TODO: In the following command, logic needs to be put in place that will allow for holding on either hand
 
             commands.CreateCommand("hold")
                 .Parameter("user", ParameterType.Unparsed)
@@ -292,6 +298,7 @@ namespace CasinoDiscordBot
             });
         }
 
+        //TODO: Move all of these helper functions into the Blackjack class where they belong
         private void Log(object sender, LogMessageEventArgs e)
         {
             Console.WriteLine(e.Message.ToString());

@@ -45,6 +45,11 @@ namespace CasinoDiscordBot
             return handSplit;
         }
 
+        public void splitPlayerHand()
+        {
+            handSplit = true;
+        }
+
         public void playSplitHand(bool isSplitHand)
         {
             isPlayerHand = isSplitHand ? false : true;
@@ -350,7 +355,7 @@ namespace CasinoDiscordBot
             }
             if (result == 3)
             {
-                playerChips += currentBet;
+                //playerChips += currentBet;
             }
         }
 
@@ -375,6 +380,7 @@ namespace CasinoDiscordBot
 
         private void split()
         {
+            splitPlayerHand();
             handSplit = true;
             // split the hand into two hands 
             splitHand[0] = playerHand[1];
