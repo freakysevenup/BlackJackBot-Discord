@@ -6,8 +6,6 @@ using System.Threading.Tasks;
 using Discord;
 using Discord.Commands;
 
-//TODO: Get Token and Register BlackJack Bot
-//TODO: Test BlackJack Bot
 
 namespace CasinoDiscordBot
 {
@@ -16,6 +14,7 @@ namespace CasinoDiscordBot
         DiscordClient client;
         CommandService commands;
         BlackJack bj = new BlackJack();
+        string message;
 
         public Bot()
         {
@@ -40,41 +39,61 @@ namespace CasinoDiscordBot
                 .Parameter("user", ParameterType.Unparsed)
                 .Do(async (e) =>
                 {
-                    await (e.Channel.SendMessage("Welcome to BlackJack \nYour Chips : " + bj.getChips()));
-                    await (e.Channel.SendMessage("How much will you bet .min ( 5 ) or .max ( 100 )?"));
+                    message = @"Welcome to BlackJack \nYour Chips : " + bj.getChips()
+                        + "\nHow much will you bet .min ( 5 ) or .max ( 100 )?";
+                    await (e.Channel.SendMessage(message));
                 });
 
             commands.CreateCommand("draw")
                 .Parameter("user", ParameterType.Unparsed)
                 .Do(async (e) =>
                 {
+                    
                     bj.determinePlay("draw");
+
                     if(bj.getCurrentHandValue(false) > 21)
                     {
+                        message = @"You lost \nYour Chips : " + bj.getChips() 
+                            + "\nYour Hand : " + displayHand(bj.getPlayerHand()) 
+                            + "\tHand Value : " + bj.getCurrentHandValue(false) 
+                            + "Dealer Hand : " + displayHand(bj.getCompHand()) 
+                            + "\tComp Hand Value : " + getCurrentHandValue(bj.getCompHand()) 
+                            + "\nWould you like me to .deal again? or .quit?";
                         bj.adjustPlayerChips(2);
-                        await (e.Channel.SendMessage("You lost \nYour Chips : " + bj.getChips() + "\nYour Hand : " + displayHand(bj.getPlayerHand()) + "\tHand Value : " + bj.getCurrentHandValue(false)));
-                        await (e.Channel.SendMessage("Dealer Hand : " + displayHand(bj.getCompHand()) + "\tComp Hand Value : " + getCurrentHandValue(bj.getCompHand()) + "\nWould you like me to .deal again? or .quit?"));
+                        await (e.Channel.SendMessage(message));
                     }
                     else
                     {
-                        await (e.Channel.SendMessage("Your Chips: " + bj.getChips() + "\nYour Hand : " + displayHand(bj.getPlayerHand()) + "\tHand Value : " + bj.getCurrentHandValue(false)));
+                        message = @"Your Chips: " + bj.getChips()
+                            + "\nYour Hand : " + displayHand(bj.getPlayerHand())
+                            + "\tHand Value : " + bj.getCurrentHandValue(false);
+                        await (e.Channel.SendMessage(message));
                     }
                     if(bj.isHandSplit())
                     {
                         if (bj.getCurrentHandValue(true) > 21)
                         {
                             bj.adjustPlayerChips(2);
-                            await (e.Channel.SendMessage("You lost \nYour Chips : " + bj.getChips() + "\nYour Split Hand : " + displayHand(bj.getPlayerHand()) + "\tSplit Hand Value : " + bj.getCurrentHandValue(true)));
-                            await (e.Channel.SendMessage("Dealer Hand : " + displayHand(bj.getCompHand()) + "\nWould you like me to .deal again? or .quit?"));
+                            message = @"You lost \nYour Chips : " + bj.getChips()
+                                + "\nYour Split Hand : " + displayHand(bj.getPlayerHand())
+                                + "\tSplit Hand Value : " + bj.getCurrentHandValue(true)
+                                + "Dealer Hand : " + displayHand(bj.getCompHand())
+                                + "\nWould you like me to .deal again? or .quit?";
+                            await (e.Channel.SendMessage(message));
                         }
                         else
                         {
-                            await (e.Channel.SendMessage("Your Chips: " + bj.getChips() + "\nYour Split Hand : " + displayHand(bj.getSplitHand()) + "\tSplit Hand Value : " + bj.getCurrentHandValue(true)));
+                            message = @"Your Chips: " + bj.getChips() 
+                                + "\nYour Split Hand : " + displayHand(bj.getSplitHand()) 
+                                + "\tSplit Hand Value : " + bj.getCurrentHandValue(true);
+                            await (e.Channel.SendMessage(message));
                         }
                     }
                     if(!(bj.getCurrentHandValue(false) > 21) && !(bj.getCurrentHandValue(true) > 21))
                     {
-                        await (e.Channel.SendMessage("Dealer Hand : ? " + displayCard(bj.getCompHand()[1]) + "\nWhat will you do?" + "\n.draw, .double down, or .hold"));
+                        message = @"Dealer Hand : ? " + displayCard(bj.getCompHand()[1]) 
+                            + "\nWhat will you do?" + "\n.draw, .double down, or .hold";
+                        await (e.Channel.SendMessage(message));
                     }
                 });
 
@@ -82,7 +101,7 @@ namespace CasinoDiscordBot
                 .Parameter("user", ParameterType.Unparsed)
                 .Do(async (e) =>
                 {
-                    if(bj.getChips() > 5)
+                    if(bj.getChips() >= 5)
                     {
                         bj.bet(5);
                     }
@@ -90,19 +109,28 @@ namespace CasinoDiscordBot
                     {
                         bj.buyIn();
                         bj.bet(5);
-                        await (e.Channel.SendMessage("A grcious donor has made a contribution to you addiction.."));
+                        await (e.Channel.SendMessage("A gracious donor has made a contribution to your addiction.."));
                     }
 
                     if (bj.getCurrentHandValue(false) == 21)
                     {
                         bj.adjustPlayerChips(1);
-                        await (e.Channel.SendMessage("You Won \nYour Chips : " + bj.getChips() + "\nYour Hand : " + displayHand(bj.getPlayerHand()) + "\tHand Value : " + bj.getCurrentHandValue(false)));
-                        await (e.Channel.SendMessage("Dealer Hand : " + displayHand(bj.getCompHand()) + "\tComp Hand Value : " + getCurrentHandValue(bj.getCompHand()) + "\nWould you like me to .deal again? or .quit?"));
+                        message = @"You Won \nYour Chips : " + bj.getChips()
+                            + "\nYour Hand : " + displayHand(bj.getPlayerHand())
+                            + "\tHand Value : " + bj.getCurrentHandValue(false)
+                            + "Dealer Hand : " + displayHand(bj.getCompHand())
+                            + "\tComp Hand Value : " + getCurrentHandValue(bj.getCompHand())
+                            + "\nWould you like me to .deal again? or .quit?";
+                        await (e.Channel.SendMessage(message));
                     }
                     else
                     {
-                        await (e.Channel.SendMessage("Your Chips : " + bj.getChips() + "\nYour Hand : " + displayHand(bj.getPlayerHand()) + "\tHand Value : " + bj.getCurrentHandValue(false)));
-                        await (e.Channel.SendMessage("Dealer Hand : ? " + displayCard(bj.getCompHand()[1]) + "\nWhat will you do?" + "\n.draw, .split, .double down, or .hold"));
+                        message = @"Your Chips : " + bj.getChips()
+                            + "\nYour Hand : " + displayHand(bj.getPlayerHand())
+                            + "\tHand Value : " + bj.getCurrentHandValue(false)
+                            + "Dealer Hand : ? " + displayCard(bj.getCompHand()[1])
+                            + "\nWhat will you do?" + "\n.draw, .split, .double down, or .hold";
+                        await (e.Channel.SendMessage(message));
                     }
                 });
 
@@ -110,7 +138,7 @@ namespace CasinoDiscordBot
                 .Parameter("user", ParameterType.Unparsed)
                 .Do(async (e) =>
                 {
-                    if (bj.getChips() > 100)
+                    if (bj.getChips() >= 100)
                     {
                         bj.bet(100);
                     }
@@ -118,18 +146,27 @@ namespace CasinoDiscordBot
                     {
                         bj.buyIn();
                         bj.bet(100);
-                        await (e.Channel.SendMessage("A grcious donor has made a contribution to you addiction.."));
+                        await (e.Channel.SendMessage("A gracious donor has made a contribution to your addiction.."));
                     }
                     if (bj.getCurrentHandValue(false) == 21)
                     {
                         bj.adjustPlayerChips(1);
-                        await (e.Channel.SendMessage("You Won \nYour Chips : " + bj.getChips() + "\nYour Hand : " + displayHand(bj.getPlayerHand()) + "\tHand Value : " + bj.getCurrentHandValue(false)));
-                        await (e.Channel.SendMessage("Dealer Hand : " + displayHand(bj.getCompHand()) + "\tComp Hand Value : " + getCurrentHandValue(bj.getCompHand()) + "\nWould you like me to .deal again? or .quit?"));
+                        message = @"You Won \nYour Chips : " + bj.getChips()
+                            + "\nYour Hand : " + displayHand(bj.getPlayerHand())
+                            + "\tHand Value : " + bj.getCurrentHandValue(false)
+                            + "Dealer Hand : " + displayHand(bj.getCompHand())
+                            + "\tComp Hand Value : " + getCurrentHandValue(bj.getCompHand())
+                            + "\nWould you like me to .deal again? or .quit?";
+                        await (e.Channel.SendMessage(message));
                     }
                     else
                     {
-                        await (e.Channel.SendMessage("Your Chips : " + bj.getChips() + "\nYour Hand : " + displayHand(bj.getPlayerHand()) + "\tHand Value : " + bj.getCurrentHandValue(false)));
-                        await (e.Channel.SendMessage("Dealer Hand : ? " + displayCard(bj.getCompHand()[1]) + "\nWhat will you do?" + "\n.draw, .split, .double down, or .hold"));
+                        message = @"Your Chips : " + bj.getChips()
+                            + "\nYour Hand : " + displayHand(bj.getPlayerHand())
+                            + "\tHand Value : " + bj.getCurrentHandValue(false)
+                            + "Dealer Hand : ? " + displayCard(bj.getCompHand()[1])
+                            + "\nWhat will you do?" + "\n.draw, .split, .double down, or .hold";
+                        await (e.Channel.SendMessage(message));
                     }
                 });
 
@@ -138,9 +175,14 @@ namespace CasinoDiscordBot
                 .Do(async (e) =>
                 {
                     bj.determinePlay("split");
-                    await (e.Channel.SendMessage("Your Chips : " + bj.getChips() + "\nYour Hand : " + displayHand(bj.getPlayerHand()) + "\tHand Value : " + bj.getCurrentHandValue(false)));
-                    await (e.Channel.SendMessage("Your Split Hand : " + displayHand(bj.getSplitHand()) + "\tSplit Hand Value : " + bj.getCurrentHandValue(true)));
-                    await (e.Channel.SendMessage("Dealer Hand : ? " + displayCard(bj.getCompHand()[1]) + "\nWhat will you do?" + "\n.draw, .double down, or .hold"));
+                    message = @"Your Chips : " + bj.getChips() + "\nYour Hand : "
+                        + displayHand(bj.getPlayerHand()) + "\tHand Value : "
+                        + bj.getCurrentHandValue(false)
+                        + "Your Split Hand : " + displayHand(bj.getSplitHand())
+                        + "\tSplit Hand Value : " + bj.getCurrentHandValue(true)
+                        + "Dealer Hand : ? " + displayCard(bj.getCompHand()[1])
+                        + "\nWhat will you do?" + "\n.draw, .double down, or .hold";
+                    await (e.Channel.SendMessage(message));
                 });
 
             commands.CreateCommand("double down")
@@ -148,11 +190,15 @@ namespace CasinoDiscordBot
                 .Do(async (e) =>
                 {
                     bj.determinePlay("double down");
-                    await (e.Channel.SendMessage("Your Chips : " + bj.getChips()));
-                    await (e.Channel.SendMessage("Your Hand : " + displayHand(bj.getPlayerHand()) + "\tHand Value : " + bj.getCurrentHandValue(false)));
+                    message = @"Your Chips : " + bj.getChips()
+                        + "Your Hand : " + displayHand(bj.getPlayerHand())
+                        + "\tHand Value : " + bj.getCurrentHandValue(false);
+                    await (e.Channel.SendMessage(message));
                     if (bj.isHandSplit())
                     {
-                        await (e.Channel.SendMessage("Your Split Hand : " + displayHand(bj.getSplitHand()) + "\tSplit Hand Value : " + bj.getCurrentHandValue(true)));
+                        message = @"Your Split Hand : " + displayHand(bj.getSplitHand())
+                            + "\tSplit Hand Value : " + bj.getCurrentHandValue(true);
+                        await (e.Channel.SendMessage(message));
                     }
                     await (e.Channel.SendMessage("Dealer Hand : ? " + displayCard(bj.getCompHand()[1]) + "\nWhat will you do?" + "\n.draw or .hold"));
                 });
@@ -165,17 +211,26 @@ namespace CasinoDiscordBot
                     if(bj.result() == 1)
                     {
                         bj.adjustPlayerChips(1);
-                        await (e.Channel.SendMessage("You won! \nYour Chips : " + bj.getChips() + "\nYour Hand : " + displayHand(bj.getPlayerHand()) + "\tHand Value : " + bj.getCurrentHandValue(false)));
+                        message = @"You won! \nYour Chips : " + bj.getChips()
+                            + "\nYour Hand : " + displayHand(bj.getPlayerHand())
+                            + "\tHand Value : " + bj.getCurrentHandValue(false);
+                        await (e.Channel.SendMessage(message));
                     }
                     else if(bj.result() == 2)
                     {
                         bj.adjustPlayerChips(2);
-                        await (e.Channel.SendMessage("You lost \nYour Chips : " + bj.getChips() + "\nYour Hand : " + displayHand(bj.getPlayerHand()) + "\tHand Value : " + bj.getCurrentHandValue(false)));
+                        message = @"You lost \nYour Chips : " + bj.getChips()
+                            + "\nYour Hand : " + displayHand(bj.getPlayerHand())
+                            + "\tHand Value : " + bj.getCurrentHandValue(false);
+                        await (e.Channel.SendMessage(message));
                     }
                     else
                     {
                         bj.adjustPlayerChips(3);
-                        await (e.Channel.SendMessage("You tied \nYour Chips : " + bj.getChips() + "\nYour Hand : " + displayHand(bj.getPlayerHand()) + "\tHand Value : " + bj.getCurrentHandValue(false)));
+                        message = @"You tied \nYour Chips : " + bj.getChips()
+                            + "\nYour Hand : " + displayHand(bj.getPlayerHand())
+                            + "\tHand Value : " + bj.getCurrentHandValue(false);
+                        await (e.Channel.SendMessage(message));
                     }
 
                     if (bj.isHandSplit())
@@ -183,22 +238,34 @@ namespace CasinoDiscordBot
                         if (bj.result() == 1)
                         {
                             bj.adjustPlayerChips(1);
-                            await (e.Channel.SendMessage("You won! \nYour Chips : " + bj.getChips() + "\nYour Second Hand: " + displayHand(bj.getSplitHand()) + "\tSplit Hand Value : " + bj.getCurrentHandValue(true)));
+                            message = @"You won! \nYour Chips : " + bj.getChips()
+                                + "\nYour Second Hand: " + displayHand(bj.getSplitHand())
+                                + "\tSplit Hand Value : " + bj.getCurrentHandValue(true);
+                            await (e.Channel.SendMessage(message));
                         }
                         else if (bj.result() == 2)
                         {
                             bj.adjustPlayerChips(2);
-                            await (e.Channel.SendMessage("You lost \nYour Chips : " + bj.getChips() + "\nYour Second Hand: " + displayHand(bj.getSplitHand()) + "\tSplit Hand Value : " + bj.getCurrentHandValue(true)));
+                            message = @"You lost \nYour Chips : " + bj.getChips()
+                                + "\nYour Second Hand: " + displayHand(bj.getSplitHand())
+                                + "\tSplit Hand Value : " + bj.getCurrentHandValue(true);
+                            await (e.Channel.SendMessage(message));
                         }
                         else
                         {
                             bj.adjustPlayerChips(3);
-                            await (e.Channel.SendMessage("You tied \nYour Chips : " + bj.getChips() + "\nYour Second Hand: " + displayHand(bj.getSplitHand()) + "\tSplit Hand Value : " + bj.getCurrentHandValue(true)));
+                            message = @"You tied \nYour Chips : " + bj.getChips()
+                                + "\nYour Second Hand: " + displayHand(bj.getSplitHand())
+                                + "\tSplit Hand Value : " + bj.getCurrentHandValue(true);
+                            await (e.Channel.SendMessage(message));
                         }
                     }
                     else
                     {
-                        await (e.Channel.SendMessage("Dealer Hand : " + displayHand(bj.getCompHand()) + "\tComp Hand Value : " + getCurrentHandValue(bj.getCompHand()) + "\nWould you like me to .deal again? or .quit?"));
+                        message = "Dealer Hand : " + displayHand(bj.getCompHand())
+                            + "\tComp Hand Value : " + getCurrentHandValue(bj.getCompHand())
+                            + "\nWould you like me to .deal again? or .quit?";
+                        await (e.Channel.SendMessage(message));
                     }
                 });
 
@@ -207,8 +274,7 @@ namespace CasinoDiscordBot
                 .Do(async (e) =>
                 {
                     bj.determinePlay("deal");
-                    await (e.Channel.SendMessage("\nYour Chips : " + bj.getChips()));
-                    await (e.Channel.SendMessage("How much will you bet .min ( 5 ) or .max ( 100 )?"));
+                    await (e.Channel.SendMessage("\nYour Chips : " + bj.getChips() + "\nHow much will you bet .min ( 5 ) or .max ( 100 )?"));
                 });
 
             commands.CreateCommand("quit")

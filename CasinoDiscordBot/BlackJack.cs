@@ -306,7 +306,6 @@ namespace CasinoDiscordBot
                     {
                         playerHand[playerHandIterator] = drawCard();
                         playerHandIterator++;
-                        Console.WriteLine("isPlayerHand and it just called drawCard");
                     }
                     else
                     {
@@ -390,22 +389,18 @@ namespace CasinoDiscordBot
         private void hold()
         {
             playerHold = true;
-            Console.WriteLine("playerHold is true");
             if (isHandSplit())
             {
-                Console.WriteLine("playerHold is true and just told to play the split hand");
                 playSplitHand(true);
             }
             else
             {
-                Console.WriteLine("playerHold is true and computer hand being played");
                 playComputerHand();
             }
         }
 
         public void playComputerHand()
         {
-            Console.WriteLine(computerHand[0] + " " + computerHand[1]);
             int compHandValue = 0;
             int aces = 0;
 
