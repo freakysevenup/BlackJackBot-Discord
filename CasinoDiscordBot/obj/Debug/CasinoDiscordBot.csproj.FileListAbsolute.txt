@@ -36,3 +36,22 @@ C:\Users\Jesse Derochie\Desktop\Discord_Bots\BlackJack\BlackJackBot-Discord\Casi
 C:\Users\Jesse Derochie\Desktop\Discord_Bots\BlackJack\BlackJackBot-Discord\CasinoDiscordBot\bin\Debug\Nito.AsyncEx.Enlightenment.xml
 C:\Users\Jesse Derochie\Desktop\Discord_Bots\BlackJack\BlackJackBot-Discord\CasinoDiscordBot\bin\Debug\RestSharp.xml
 C:\Users\Jesse Derochie\Desktop\Discord_Bots\BlackJack\BlackJackBot-Discord\CasinoDiscordBot\obj\Debug\CasinoDiscordBot.csprojResolveAssemblyReference.cache
+C:\Users\jesse.derochie\Desktop\bot\BlackJackBot-Discord\CasinoDiscordBot\bin\Debug\CasinoDiscordBot.exe.config
+C:\Users\jesse.derochie\Desktop\bot\BlackJackBot-Discord\CasinoDiscordBot\obj\Debug\CasinoDiscordBot.exe
+C:\Users\jesse.derochie\Desktop\bot\BlackJackBot-Discord\CasinoDiscordBot\obj\Debug\CasinoDiscordBot.pdb
+C:\Users\jesse.derochie\Desktop\bot\BlackJackBot-Discord\CasinoDiscordBot\bin\Debug\CasinoDiscordBot.exe
+C:\Users\jesse.derochie\Desktop\bot\BlackJackBot-Discord\CasinoDiscordBot\bin\Debug\CasinoDiscordBot.pdb
+C:\Users\jesse.derochie\Desktop\bot\BlackJackBot-Discord\CasinoDiscordBot\bin\Debug\Discord.Net.Commands.dll
+C:\Users\jesse.derochie\Desktop\bot\BlackJackBot-Discord\CasinoDiscordBot\bin\Debug\Discord.Net.dll
+C:\Users\jesse.derochie\Desktop\bot\BlackJackBot-Discord\CasinoDiscordBot\bin\Debug\Newtonsoft.Json.dll
+C:\Users\jesse.derochie\Desktop\bot\BlackJackBot-Discord\CasinoDiscordBot\bin\Debug\Nito.AsyncEx.Concurrent.dll
+C:\Users\jesse.derochie\Desktop\bot\BlackJackBot-Discord\CasinoDiscordBot\bin\Debug\Nito.AsyncEx.dll
+C:\Users\jesse.derochie\Desktop\bot\BlackJackBot-Discord\CasinoDiscordBot\bin\Debug\Nito.AsyncEx.Enlightenment.dll
+C:\Users\jesse.derochie\Desktop\bot\BlackJackBot-Discord\CasinoDiscordBot\bin\Debug\RestSharp.dll
+C:\Users\jesse.derochie\Desktop\bot\BlackJackBot-Discord\CasinoDiscordBot\bin\Debug\WebSocket4Net.dll
+C:\Users\jesse.derochie\Desktop\bot\BlackJackBot-Discord\CasinoDiscordBot\bin\Debug\Newtonsoft.Json.xml
+C:\Users\jesse.derochie\Desktop\bot\BlackJackBot-Discord\CasinoDiscordBot\bin\Debug\Nito.AsyncEx.xml
+C:\Users\jesse.derochie\Desktop\bot\BlackJackBot-Discord\CasinoDiscordBot\bin\Debug\Nito.AsyncEx.Concurrent.xml
+C:\Users\jesse.derochie\Desktop\bot\BlackJackBot-Discord\CasinoDiscordBot\bin\Debug\Nito.AsyncEx.Enlightenment.xml
+C:\Users\jesse.derochie\Desktop\bot\BlackJackBot-Discord\CasinoDiscordBot\bin\Debug\RestSharp.xml
+C:\Users\jesse.derochie\Desktop\bot\BlackJackBot-Discord\CasinoDiscordBot\obj\Debug\CasinoDiscordBot.csprojResolveAssemblyReference.cache
