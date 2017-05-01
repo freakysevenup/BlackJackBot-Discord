@@ -18,9 +18,11 @@ namespace CasinoDiscordBot
         int playerChips { get; set; }
         int currentBet { get; set; }
         Random rand = new Random(DateTime.Now.Millisecond);
-        bool playerHold = false;
+        public bool playerHold = false;
+        public bool splitHold = false;
         bool handSplit = false;
         bool isPlayerHand = true;
+        bool drewCard = false;
         const int MAX_BET = 500;
         const int MIN_BET = 5;
         const int MAX_NUM_OF_EACH_CARD = 20;
@@ -40,6 +42,11 @@ namespace CasinoDiscordBot
             beginGame();
         }
 
+        public bool didDrawCard()
+        {
+            return drewCard;
+        }
+
         public bool isHandSplit()
         {
             return handSplit;
@@ -50,9 +57,18 @@ namespace CasinoDiscordBot
             handSplit = true;
         }
 
-        public void playSplitHand(bool isSplitHand)
+        public bool HandIsFinished()
         {
-            isPlayerHand = isSplitHand ? false : true;
+            bool finished = false;
+            if (isHandSplit() && playerHold && splitHold)
+            {
+                finished = true;
+            }
+            if(!isHandSplit() && playerHold)
+            {
+                finished = true;
+            }
+            return finished;
         }
 
         public int[] getPlayerHand()
@@ -226,14 +242,20 @@ namespace CasinoDiscordBot
             return returnCard;
         }
 
-        private int determineWinner()
+        private int determineWinner(bool split)
         {
             int playerHandValue = 0;
+            int splitHandValue = 0;
             int compHandValue = 0;
+
+            bool playerWin = false;
+            bool splitWin = false;
+            // if the hand has been split get the current split hand value
             if (isHandSplit())
             {
-                playerHandValue = getCurrentHandValue(true);
+                splitHandValue = getCurrentHandValue(true);
             }
+            // if it hasn't get the current hand value
             else
             {
                 playerHandValue = getCurrentHandValue(false);
@@ -269,35 +291,79 @@ namespace CasinoDiscordBot
                 }
             }
             
-            int temp = 0;
+            int ptemp = 0;
+            int stemp = 0;
 
             // if both hands are equal
             if (playerHandValue == compHandValue)
             {
-                temp = 3;
+                ptemp = 3;
+            }
+
+            if (splitHandValue == compHandValue)
+            {
+                stemp = 3;
             }
 
             // player hand is higher than computer and player hand is less than or equal to 21 -- the player wins
             if(playerHandValue > compHandValue && playerHandValue <= 21)
             {
-                temp = 1;
+                ptemp = 1;
+                playerWin = true;
+            }
+            // split hand is higher than computer and split hand is less than or equal to 21 -- the split hand wins
+            if (splitHandValue > compHandValue && splitHandValue <= 21)
+            {
+                stemp = 1;
+                splitWin = true;
             }
             // if comp hand is higher than player, and comp hand is less than or equal to 21 == comp wins
-            if((compHandValue > playerHandValue && compHandValue <= 21))
+            if ((compHandValue > playerHandValue && compHandValue <= 21))
             {
-                temp = 2;
+                ptemp = 2;
+                playerWin = false;
+            }
+            // if comp hand is higher than sp[lit, and comp hand is less than or equal to 21 == comp wins
+            if ((compHandValue > splitHandValue && compHandValue <= 21))
+            {
+                stemp = 2;
+                splitWin = false;
             }
             // if player hand is greater than 21 -- player loses
-            if(playerHandValue > 21)
+            if (playerHandValue > 21)
             {
-                temp = 2;
+                ptemp = 2;
+                playerWin = false;
+            }
+            // if split hand is greater than 21 -- split loses
+            if (splitHandValue > 21)
+            {
+                stemp = 2;
+                splitWin = false;
             }
             // if comp hand is greater than 21 and player hand is less than or equal to 21 -- player wins
-            if(compHandValue > 21 && playerHandValue <= 21)
+            if (compHandValue > 21 && playerHandValue <= 21)
             {
-                temp = 1;
+                ptemp = 1;
+                playerWin = true;
+            }
+            // if comp hand is greater than 21 and split hand is less than or equal to 21 -- split wins
+            if (compHandValue > 21 && splitHandValue <= 21)
+            {
+                stemp = 1;
+                splitWin = true;
             }
 
+            int temp = 0;
+            if (split)
+            {
+                temp = stemp;
+            }
+            else
+            {
+                temp = ptemp;
+            }
+            
             return temp;
         }
 
@@ -307,15 +373,30 @@ namespace CasinoDiscordBot
             switch (decision)
             {
                 case "draw":
-                    if(isPlayerHand)
+                    // if you haven't split your hand
+                    if(!isHandSplit())
                     {
                         playerHand[playerHandIterator] = drawCard();
                         playerHandIterator++;
+                        drewCard = true;
                     }
+                    // if you have split your hand
                     else
                     {
-                        splitHand[splitHandIterator] = drawCard();
-                        splitHandIterator++;
+                        // if this is your split hand
+                        if(!isPlayerHand)
+                        {
+                            splitHand[splitHandIterator] = drawCard();
+                            splitHandIterator++;
+                            drewCard = true;
+                        }
+                        // if this is your player hand
+                        else
+                        {
+                            playerHand[playerHandIterator] = drawCard();
+                            playerHandIterator++;
+                            drewCard = true;
+                        }
                     }
                     break;
                 case "split":
@@ -336,9 +417,9 @@ namespace CasinoDiscordBot
             }
         }
 
-        public int result()
+        public int result(bool split)
         {
-            int temp = determineWinner();
+            int temp = determineWinner(split);
 
             return temp;
         }
@@ -374,32 +455,44 @@ namespace CasinoDiscordBot
 
         private void doubleDown()
         {
-            currentBet *= 2;
-            playerHand[playerHandIterator] = drawCard();
+            if(!drewCard)
+            {
+                currentBet *= 2;
+                playerHand[playerHandIterator] = drawCard();
+            }
         }
 
         private void split()
         {
-            splitPlayerHand();
-            handSplit = true;
-            // split the hand into two hands 
-            splitHand[0] = playerHand[1];
-            int temp = playerHand[0];
-            playerHand = new int[21];
-            playerHand[0] = temp;
+            if(!handSplit)
+            {
+                splitPlayerHand();
+                handSplit = true;
+                // split the hand into two hands 
+                splitHand[0] = playerHand[1];
+                int temp = playerHand[0];
+                playerHand = new int[21];
+                playerHand[0] = temp;
 
-            splitHand[1] = drawCard();
-            playerHand[1] = drawCard();
+                splitHand[1] = drawCard();
+                playerHand[1] = drawCard();
+            }
         }
 
         private void hold()
         {
-            playerHold = true;
+            // if this is the split hand then hold that hand
             if (isHandSplit())
             {
-                playSplitHand(true);
+                splitHold = true;
             }
-            else
+            // if this is the player hand
+            else 
+            {
+                playerHold = true;
+            }
+            // if both hands have been held play the computer hand
+            if (playerHold && splitHold)
             {
                 playComputerHand();
             }
