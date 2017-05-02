@@ -1,6 +1,6 @@
 # BlackJackBot-Discord
 
-![alt text](https://github.com/freakysevenup/markdown-here/raw/master/src/common/images/icon48.png "Logo Title Text 1")
+![alt text](https://cdn0.iconfinder.com/data/icons/poker-1/154/casino-poker-gamble-label-128.png "Black Jack Bot Logo")
 
 A Discord Bot that will play Black Jack with you (In Progress)
 
