@@ -1,34 +1,36 @@
 # BlackJackBot-Discord
-A Discord Bot that will play Black Jack with you
 
-A link so you can add this bot to your Discord Server
-<LINK to come, when bot can be hosted>
+![alt text](https://github.com/freakysevenup/markdown-here/raw/master/src/common/images/icon48.png "Logo Title Text 1")
+
+A Discord Bot that will play Black Jack with you (In Progress)
+
+A link so you can add this bot to your Discord Server (Will come when bot can be hosted)
 
 <h1>Command List</h1>
 
-.play
-- starts a new game for the user, the user will be given 500 chips to play with
+<h3>.play</h3>
+<i>starts a new game for the user, the user will be given 500 chips to play with</u></i>
 
-.min
-- bet the minimum amount of chips for a hand (5 chips)
+<h3>.min</h3>
+<i>bet the minimum amount of chips for a hand (5 chips)</i>
 
-.max
-- bet the maximum amount of chips for a hand (100 chips)
+<h3>.max</h3>
+<i>bet the maximum amount of chips for a hand (100 chips)</i>
 
-.draw
-- draw a card for your hand
+<h3>.draw</h3>
+<i>draw a card for your hand</i>
 
-.split
-- split your hand into two hands
+<h3>.split</h3>
+<i>split your hand into two hands</i>
 
-.double down
-- double your bet for this hand
+<h3>.double down</h3>
+<i>double your bet for this hand</i>
 
-.hold
-- decide to keep the hand you have and see how you fare against the dealer
+<h3>.hold</h3>
+<i>decide to keep the hand you have and see how you fare against the dealer</i>
 
-.deal
-- deal another hand to continue playing 
+<h3>.deal</h3>
+<i>deal another hand to continue playing</i>
 
-.quit
-- end the game and lose your progress
+<h3>.quit</h3>
+<i>end the game and lose your progress</i>
