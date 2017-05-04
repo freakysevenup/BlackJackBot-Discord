@@ -1,14 +1,21 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Discord;
 using Discord.Commands;
 
 
 namespace CasinoDiscordBot
 {
+    //TODO: Ensure that the game being played by a player is unique to that player
+    //TODO: More than one game can be played at a time as long as it isn't by the same player
+    //TODO: Games on different servers do not affect each other
+    //TODO: Player playing on one server, can continue playing on another server
+    //TODO: Implement some sort of database system for storing player details, name, chips, games won, games lost etc.
+    //TODO: Logic for holding a hand needs serious attention
+    //TODO: Verify logic in all other commands
+    //TODO: Add emojis or images for cards
+    //TODO: Add an image for starting the game
+
+
     public class Bot
     {
         DiscordClient client;
@@ -87,7 +94,7 @@ namespace CasinoDiscordBot
 
                     // if the hand has been spplit and I haven't already held my player hand
                     // I want to play to that hand first
-                    if(bj.isHandSplit() && !bj.playerHold)
+                    else if(bj.isHandSplit() && !bj.playerHold)
                     {
                         // if the player hand value is greater than 21 they lose
                         // get the value of the split hand
@@ -113,7 +120,7 @@ namespace CasinoDiscordBot
 
                     // if the hand has been split and I have already held on my player hand its time to play to 
                     // the split hand
-                    if (bj.isHandSplit() && bj.playerHold)
+                    else if (bj.isHandSplit() && bj.playerHold)
                     {
                         // if the player hand value is greater than 21 they lose
                         // get the value of the split hand
@@ -153,7 +160,7 @@ namespace CasinoDiscordBot
 
 
                     // If the hand has been split
-                    if (bj.isHandSplit())
+                    else if (bj.isHandSplit())
                     {
                         // get the value of the split hand
                         if (bj.getCurrentHandValue(true) > 21)
@@ -170,9 +177,13 @@ namespace CasinoDiscordBot
                         else
                         {
                             // if you haven't lost show the split hand value
-                            message = "Your Chips: " + bj.getChips() 
+                            message = "Your Chips: " + bj.getChips()
+                                + "\nYour Split Hand : " + displayHand(bj.getPlayerHand())
                                 + "\nYour Split Hand : " + displayHand(bj.getSplitHand()) 
                                 + "\tSplit Hand Value : " + bj.getCurrentHandValue(true);
+                            await (e.Channel.SendMessage(message));
+                            message = "\nDealer Hand : ? " + displayCard(bj.getCompHand()[1])
+                                + "\nWhat will you do? .draw, .double down, or .hold";
                             await (e.Channel.SendMessage(message));
                         }
                     }
